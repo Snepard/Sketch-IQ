@@ -1,0 +1,59 @@
+# ---- OS / Editor ----
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# ---- Secrets / env ----
+.env
+.env.*
+!.env.example
+
+# ---- Python (backend + tooling) ----
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual envs
+.venv/
+venv/
+ENV/
+
+# Backend runtime artifacts
+backend/venv/
+backend/app/__pycache__/
+backend/app/*.log
+backend/*.log
+
+# ---- Node / Next.js (frontend) ----
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+coverage/
+
+# ---- ML artifacts / training data ----
+ml/data/
+
+# Frontend envs
+frontend/.env
+frontend/.env.*
+
+# ---- Jupyter ----
+.ipynb_checkpoints/

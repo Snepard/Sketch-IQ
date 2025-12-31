@@ -1,0 +1,19 @@
+Input (1×28×28)
+ ↓
+Conv Layer 1 (detect edges)
+ ↓
+ReLU
+ ↓
+Max Pooling
+ ↓
+Conv Layer 2 (detect shapes)
+ ↓
+ReLU
+ ↓
+Max Pooling
+ ↓
+Flatten
+ ↓
+Dense Layer
+ ↓
+Output Layer (10 classes)
