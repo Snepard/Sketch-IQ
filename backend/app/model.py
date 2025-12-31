@@ -1,8 +1,10 @@
+import os
 import torch
 import threading
 from app.cnn import SketchIQCNN
 
-MODEL_PATH = "model/sketch_iq_extended.pt"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "..", "model", "sketch_iq_extended.pt")
 
 device = torch.device("cpu")
 

@@ -1,8 +1,8 @@
 fastapi
 uvicorn
-pydantic
+torch
+torchvision
 numpy
 pillow
-opencv-python
+opencv-python-headless
 python-multipart
-torch

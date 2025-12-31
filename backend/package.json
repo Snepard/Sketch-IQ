@@ -1,0 +1,10 @@
+{
+  "name": "sketch-iq-backend",
+  "version": "1.0.0",
+  "description": "Backend for Sketch IQ",
+  "scripts": {
+    "dev": "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
