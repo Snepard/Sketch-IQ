@@ -274,18 +274,22 @@ export default function Home() {
                     Is the guess correct?
                   </div>
                   <div className="flex gap-4">
-                    <button
-                      className="flex-1 min-w-[120px] px-6 py-4 rounded-2xl font-semibold text-base bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 hover:bg-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    <motion.button
+                      whileHover={{ scale: 1.02, rotateX: 2 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="cursor-pointer flex-1 min-w-30 px-6 py-4 rounded-2xl font-semibold text-base bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 hover:bg-emerald-500/30 active:scale-[0.98] transition-all"
                       onClick={handlePlayAgain}
                     >
                       🎉 Yes!
-                    </button>
-                    <button
-                      className="flex-1 min-w-[120px] px-6 py-4 rounded-2xl font-semibold text-base bg-rose-500/20 text-rose-200 border border-rose-400/30 hover:bg-rose-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02, rotateX: 2 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="cursor-pointer flex-1 min-w-30 px-6 py-4 rounded-2xl font-semibold text-base bg-rose-500/20 text-rose-200 border border-rose-400/30 hover:bg-rose-500/30 active:scale-[0.98] transition-all"
                       onClick={() => setFinalStep("wrong")}
                     >
                       🤔 Nope
-                    </button>
+                    </motion.button>
                   </div>
                   <div className="mt-5 text-sm text-white/40 text-center">
                     Click Yes to play again!
@@ -305,20 +309,24 @@ export default function Home() {
                     className="w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-white text-base text-center outline-none focus:border-cyan-400/50 focus:bg-white/10 transition-all placeholder:text-white/30"
                   />
                   <div className="flex gap-4 mt-6">
-                    <button
-                      className="flex-1 min-w-[100px] px-5 py-4 rounded-2xl font-semibold text-base bg-white/10 text-white/80 border border-white/10 hover:bg-white/15 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    <motion.button
+                      whileHover={{ scale: 1.02, rotateX: 2 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="cursor-pointer flex-1 min-w-[100px] px-5 py-4 rounded-2xl font-semibold text-base bg-white/10 text-white/80 border border-white/10 hover:bg-white/15 active:scale-[0.98] transition-all"
                       onClick={() => setFinalStep("confirm")}
                       disabled={isSubmittingFeedback}
                     >
                       ← Back
-                    </button>
-                    <button
-                      className="flex-1 min-w-[100px] px-5 py-4 rounded-2xl font-semibold text-base bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-200 border border-cyan-400/30 hover:from-cyan-500/30 hover:to-purple-500/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 transition-all"
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02, rotateX: 2 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="cursor-pointer flex-1 min-w-[100px] px-5 py-4 rounded-2xl font-semibold text-base bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-200 border border-cyan-400/30 hover:from-cyan-500/30 hover:to-purple-500/30 active:scale-[0.98] disabled:opacity-50 transition-all"
                       onClick={submitFeedback}
                       disabled={isSubmittingFeedback || !correctLabel.trim() || !finalBlob}
                     >
                       {isSubmittingFeedback ? "⏳ Saving..." : "💾 Submit"}
-                    </button>
+                    </motion.button>
                   </div>
                   <div className="mt-5 text-sm text-white/40 text-center">
                     Your feedback helps improve the AI!

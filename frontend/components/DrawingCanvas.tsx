@@ -186,10 +186,12 @@ export default function DrawingCanvas({
       {/* Brush Size Selector */}
       <div className="mt-5 flex items-center justify-center gap-4">
         {brushSizes.map((size) => (
-          <button
+          <motion.button
             key={size}
             onClick={() => setBrushSize(size)}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+            whileHover={{ scale: 1.05, rotateX: 5 }}
+            whileTap={{ scale: 0.95 }}
+            className={`cursor-pointer w-10 h-10 rounded-full flex items-center justify-center transition-all ${
               brushSize === size
                 ? "bg-slate-700 ring-2 ring-cyan-400"
                 : "bg-slate-800/50 hover:bg-slate-700/50"
@@ -200,7 +202,7 @@ export default function DrawingCanvas({
               className="rounded-full bg-white"
               style={{ width: size, height: size }}
             />
-          </button>
+          </motion.button>
         ))}
       </div>
     </div>
