@@ -214,6 +214,63 @@ export default function Home() {
 
           </div>
         </motion.div>
+
+        {/* Doodle Showcase */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="w-full max-w-5xl mt-12"
+        >
+          <div className="glass-panel p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                🎨 Available Doodles
+              </h2>
+              <p className="text-gray-300 text-sm">
+                Our AI can recognize these 25 doodles. Try drawing one!
+              </p>
+            </div>
+            <div className="grid grid-cols-5 md:grid-cols-10 gap-4">
+              {[
+                { name: "airplane", emoji: "✈️" },
+                { name: "ambulance", emoji: "🚑" },
+                { name: "angel", emoji: "👼" },
+                { name: "ant", emoji: "🐜" },
+                { name: "anvil", emoji: "🔨" },
+                { name: "camera", emoji: "📷" },
+                { name: "car", emoji: "🚗" },
+                { name: "cat", emoji: "🐱" },
+                { name: "circle", emoji: "⭕" },
+                { name: "clock", emoji: "🕐" },
+                { name: "cookie", emoji: "🍪" },
+                { name: "crown", emoji: "👑" },
+                { name: "donut", emoji: "🍩" },
+                { name: "eye", emoji: "👁️" },
+                { name: "fish", emoji: "🐟" },
+                { name: "guitar", emoji: "🎸" },
+                { name: "hamburger", emoji: "🍔" },
+                { name: "parachute", emoji: "🪂" },
+                { name: "popsicle", emoji: "🍦" },
+                { name: "spider", emoji: "🕷️" },
+                { name: "square", emoji: "🟦" },
+                { name: "star", emoji: "⭐" },
+                { name: "tent", emoji: "⛺" },
+                { name: "tree", emoji: "🌳" },
+                { name: "triangle", emoji: "🔺" },
+              ].map((doodle) => (
+                <motion.div
+                  key={doodle.name}
+                  whileHover={{ scale: 1.1, rotateY: 5 }}
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all cursor-pointer"
+                >
+                  <span className="text-3xl mb-1">{doodle.emoji}</span>
+                  <span className="text-xs text-gray-300 capitalize text-center">{doodle.name}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </div>
 
       {/* Final Guess Modal */}
