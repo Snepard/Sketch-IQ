@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+const BACKEND_URL = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000") + "/predict";
 import { motion } from "framer-motion";
 import DrawingCanvas from "../components/DrawingCanvas";
 import PredictionPanel from "../components/PredictionPanel";
@@ -28,7 +29,7 @@ export default function Home() {
     const formData = new FormData();
     formData.append("file", blob);
 
-    const res = await fetch("http://127.0.0.1:8000/predict", {
+    const res = await fetch(BACKEND_URL, {
       method: "POST",
       body: formData,
       signal,
@@ -106,7 +107,7 @@ export default function Home() {
       const formData = new FormData();
       formData.append("file", finalBlob);
       formData.append("label", correctLabel.trim().toLowerCase());
-      await fetch("http://127.0.0.1:8000/feedback", {
+      await fetch((process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000") + "/feedback", {
         method: "POST",
         body: formData,
       });
