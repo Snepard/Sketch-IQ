@@ -1,37 +1,44 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, MutableRefObject } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface DrawingCanvasProps {
   onPredict: (canvas: HTMLCanvasElement) => void;
-  onDone: (canvas: HTMLCanvasElement) => void;
   onClear: () => void;
   onDrawStart: () => void;
   isLoading: boolean;
   hasDrawn: boolean;
   clearVersion: number;
+  canvasRef: MutableRefObject<HTMLCanvasElement | null>;
 }
 
 export default function DrawingCanvas({
   onPredict,
-  onDone,
   onClear,
   onDrawStart,
   isLoading,
   hasDrawn,
   clearVersion,
+  canvasRef,
 }: DrawingCanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const internalCanvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawingRef = useRef(false);
 
   const [drawing, setDrawing] = useState(false);
   const [brushSize, setBrushSize] = useState(8);
   const [showHint, setShowHint] = useState(true);
 
+  // Sync refs
+  useEffect(() => {
+    if (internalCanvasRef.current) {
+      canvasRef.current = internalCanvasRef.current;
+    }
+  }, [canvasRef]);
+
   /* ---------------- Canvas Init ---------------- */
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = internalCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -45,8 +52,8 @@ export default function DrawingCanvas({
 
   /* ---------------- Parent-triggered Clear ---------------- */
   useEffect(() => {
-    if (!canvasRef.current) return;
-    const canvas = canvasRef.current;
+    if (!internalCanvasRef.current) return;
+    const canvas = internalCanvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -60,9 +67,9 @@ export default function DrawingCanvas({
     if (!hasDrawn) return;
 
     const interval = setInterval(() => {
-      if (!canvasRef.current) return;
+      if (!internalCanvasRef.current) return;
       if (isLoading) return;
-      onPredict(canvasRef.current);
+      onPredict(internalCanvasRef.current);
     }, 2000);
 
     return () => clearInterval(interval);
@@ -99,7 +106,7 @@ export default function DrawingCanvas({
     setShowHint(false);
     onDrawStart();
 
-    const canvas = canvasRef.current!;
+    const canvas = internalCanvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     const { offsetX, offsetY } = getCoordinates(e, canvas);
 
@@ -110,7 +117,7 @@ export default function DrawingCanvas({
   const draw = (e: React.MouseEvent | React.TouchEvent) => {
     if (!drawing) return;
 
-    const canvas = canvasRef.current!;
+    const canvas = internalCanvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     const { offsetX, offsetY } = getCoordinates(e, canvas);
 
@@ -126,11 +133,11 @@ export default function DrawingCanvas({
   const stop = () => {
     setDrawing(false);
     isDrawingRef.current = false;
-    canvasRef.current?.getContext("2d")?.beginPath();
+    internalCanvasRef.current?.getContext("2d")?.beginPath();
   };
 
   const clear = () => {
-    const canvas = canvasRef.current!;
+    const canvas = internalCanvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -141,74 +148,60 @@ export default function DrawingCanvas({
   const brushSizes = [4, 8, 12, 18];
 
   return (
-    <div className="w-full flex flex-col gap-5">
-      <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-3xl p-5 shadow-xl">
-        <div className="relative">
-          <canvas
-            ref={canvasRef}
-            width={500}
-            height={260}
-            className="w-full rounded-2xl cursor-crosshair touch-none bg-white ring-1 ring-gray-200 hover:ring-purple-400 transition"
-            onMouseDown={start}
-            onMouseUp={stop}
-            onMouseLeave={stop}
-            onMouseMove={draw}
-            onTouchStart={start}
-            onTouchEnd={stop}
-            onTouchMove={draw}
-          />
+    <div className="w-full flex flex-col gap-2">
+      {/* Canvas Area */}
+      <div className="relative bg-white rounded-xl overflow-hidden">
+        <canvas
+          ref={internalCanvasRef}
+          width={560}
+          height={360}
+          className="w-full rounded-xl cursor-crosshair touch-none bg-white"
+          style={{ aspectRatio: "560/360" }}
+          onMouseDown={start}
+          onMouseUp={stop}
+          onMouseLeave={stop}
+          onMouseMove={draw}
+          onTouchStart={start}
+          onTouchEnd={stop}
+          onTouchMove={draw}
+        />
 
-          <AnimatePresence>
-            {showHint && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
-              >
-                <span className="text-4xl mb-2">✏️</span>
-                <span className="text-gray-400 text-sm">
-                  Start sketching here
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-          {brushSizes.map((size) => (
-            <button
-              key={size}
-              onClick={() => setBrushSize(size)}
-              className={`min-w-[60px] px-4 py-2.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${
-                brushSize === size
-                  ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-md"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
+        <AnimatePresence>
+          {showHint && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
             >
-              {size}px
-            </button>
-          ))}
-        </div>
+              <span className="text-4xl mb-2">✏️</span>
+              <span className="text-gray-400 text-sm">
+                Start sketching here
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div className="flex flex-wrap gap-4 justify-center">
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => onDone(canvasRef.current!)}
-          disabled={isLoading || !hasDrawn}
-          className="min-w-[140px] px-8 py-3.5 rounded-xl font-bold text-base text-white bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg hover:shadow-xl disabled:opacity-50 transition-all"
-        >
-          {isLoading ? "Guessing..." : "✓ Done"}
-        </motion.button>
-
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={clear}
-          className="min-w-[140px] px-8 py-3.5 rounded-xl font-bold text-base text-white bg-gradient-to-r from-rose-500 to-red-500 shadow-lg hover:shadow-xl transition-all"
-        >
-          🗑 Clear
-        </motion.button>
+      {/* Brush Size Selector */}
+      <div className="mt-5 flex items-center justify-center gap-4">
+        {brushSizes.map((size) => (
+          <button
+            key={size}
+            onClick={() => setBrushSize(size)}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+              brushSize === size
+                ? "bg-slate-700 ring-2 ring-cyan-400"
+                : "bg-slate-800/50 hover:bg-slate-700/50"
+            }`}
+            title={`${size}px`}
+          >
+            <span
+              className="rounded-full bg-white"
+              style={{ width: size, height: size }}
+            />
+          </button>
+        ))}
       </div>
     </div>
   );

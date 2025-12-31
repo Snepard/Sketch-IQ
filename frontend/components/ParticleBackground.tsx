@@ -21,16 +21,16 @@ interface Star {
 }
 
 const colors = [
-  "#ff6b6b",
-  "#feca57",
-  "#48dbfb",
-  "#ff9ff3",
-  "#54a0ff",
-  "#5f27cd",
-  "#00d2d3",
-  "#1dd1a1",
-  "#ff9f43",
-  "#ee5a5a",
+  "#ff6b9d",
+  "#c44dff",
+  "#6b5bff",
+  "#00d4ff",
+  "#ff4d94",
+  "#9d4edd",
+  "#7b68ee",
+  "#00bfff",
+  "#ff69b4",
+  "#8a2be2",
 ];
 
 export default function ParticleBackground() {
@@ -43,11 +43,11 @@ export default function ParticleBackground() {
     
     // Generate particles
     const newParticles: Particle[] = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 50; i++) {
       newParticles.push({
         id: i,
         x: Math.random() * 100,
-        size: Math.random() * 20 + 5,
+        size: Math.random() * 6 + 2,
         color: colors[Math.floor(Math.random() * colors.length)],
         duration: Math.random() * 20 + 15,
         delay: Math.random() * 10,
@@ -57,13 +57,13 @@ export default function ParticleBackground() {
 
     // Generate stars
     const newStars: Star[] = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 40; i++) {
       newStars.push({
         id: i,
         left: Math.random() * 100,
         top: Math.random() * 100,
-        duration: Math.random() * 2 + 1,
-        delay: Math.random() * 3,
+        duration: Math.random() * 3 + 1,
+        delay: Math.random() * 5,
       });
     }
     setStars(newStars);
@@ -78,16 +78,16 @@ export default function ParticleBackground() {
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {/* Gradient Orbs */}
       <motion.div
-        className="absolute w-96 h-96 rounded-full blur-3xl opacity-20"
+        className="absolute w-96 h-96 rounded-full blur-3xl opacity-30"
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          top: "10%",
-          left: "10%",
+          background: "linear-gradient(135deg, #6b21a8 0%, #7c3aed 100%)",
+          top: "5%",
+          left: "5%",
         }}
         animate={{
-          x: [0, 100, 0],
-          y: [0, 50, 0],
-          scale: [1, 1.2, 1],
+          x: [0, 50, 0],
+          y: [0, 30, 0],
+          scale: [1, 1.1, 1],
         }}
         transition={{
           duration: 20,
@@ -96,16 +96,16 @@ export default function ParticleBackground() {
         }}
       />
       <motion.div
-        className="absolute w-80 h-80 rounded-full blur-3xl opacity-20"
+        className="absolute w-80 h-80 rounded-full blur-3xl opacity-25"
         style={{
-          background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-          top: "50%",
-          right: "10%",
+          background: "linear-gradient(135deg, #ec4899 0%, #f472b6 100%)",
+          top: "40%",
+          right: "5%",
         }}
         animate={{
-          x: [0, -80, 0],
-          y: [0, -60, 0],
-          scale: [1, 1.3, 1],
+          x: [0, -40, 0],
+          y: [0, -30, 0],
+          scale: [1, 1.2, 1],
         }}
         transition={{
           duration: 25,
@@ -114,15 +114,15 @@ export default function ParticleBackground() {
         }}
       />
       <motion.div
-        className="absolute w-72 h-72 rounded-full blur-3xl opacity-15"
+        className="absolute w-72 h-72 rounded-full blur-3xl opacity-20"
         style={{
-          background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-          bottom: "20%",
-          left: "30%",
+          background: "linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%)",
+          bottom: "10%",
+          left: "25%",
         }}
         animate={{
-          x: [0, 60, 0],
-          y: [0, -40, 0],
+          x: [0, 40, 0],
+          y: [0, -20, 0],
           scale: [1, 1.1, 1],
         }}
         transition={{
@@ -142,12 +142,12 @@ export default function ParticleBackground() {
             width: particle.size,
             height: particle.size,
             backgroundColor: particle.color,
-            bottom: -20,
+            bottom: -10,
+            filter: "blur(0.5px)",
           }}
           animate={{
             y: [0, -1200],
-            rotate: [0, 360],
-            opacity: [0, 0.6, 0.6, 0],
+            opacity: [0, 0.8, 0.8, 0],
           }}
           transition={{
             duration: particle.duration,
@@ -162,14 +162,16 @@ export default function ParticleBackground() {
       {stars.map((star) => (
         <motion.div
           key={`star-${star.id}`}
-          className="absolute w-1 h-1 bg-white rounded-full"
+          className="absolute bg-white rounded-full"
           style={{
             left: `${star.left}%`,
             top: `${star.top}%`,
+            width: Math.random() > 0.5 ? 2 : 1,
+            height: Math.random() > 0.5 ? 2 : 1,
           }}
           animate={{
-            opacity: [0, 1, 0],
-            scale: [0.5, 1, 0.5],
+            opacity: [0.2, 1, 0.2],
+            scale: [0.8, 1.2, 0.8],
           }}
           transition={{
             duration: star.duration,

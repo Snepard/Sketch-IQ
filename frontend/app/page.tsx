@@ -6,12 +6,12 @@ import DrawingCanvas from "../components/DrawingCanvas";
 import PredictionPanel from "../components/PredictionPanel";
 import ParticleBackground from "../components/ParticleBackground";
 import { canvasToBlob } from "../utils/canvasToBlob";
-import { BrainCircuit, Palette } from "lucide-react";
 
 type Prediction = { label: string; confidence: number };
 
 export default function Home() {
   const controllerRef = useRef<AbortController | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [predictions, setPredictions] = useState<Prediction[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
@@ -56,9 +56,12 @@ export default function Home() {
     }
 
     setIsLoading(false);
-};
+  };
 
-  const handleDone = async (canvas: HTMLCanvasElement) => {
+  const handleDone = async () => {
+    if (!canvasRef.current) return;
+    const canvas = canvasRef.current;
+    
     if (controllerRef.current) {
       controllerRef.current.abort();
     }
@@ -118,6 +121,7 @@ export default function Home() {
   const handleClear = () => {
     setPredictions(null);
     setHasDrawn(false);
+    setClearVersion((v) => v + 1);
   };
 
   const handleDrawStart = () => {
@@ -125,94 +129,94 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen relative overflow-hidden bg-slate-900 selection:bg-purple-500/30">
-      {/* 1. Background Layer */}
+    <main className="min-h-screen relative overflow-hidden" style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)" }}>
+      {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         <ParticleBackground />
-        {/* Ambient Glow Blobs */}
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-[120px] pointer-events-none" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen py-8 px-4 sm:px-6 lg:px-8">
         
-        {/* 2. Header Section */}
+        {/* Header Section */}
         <motion.header
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, type: "spring" }}
-          className="text-center mb-10 space-y-4"
+          className="text-center my-14"
         >
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight" style={{ fontFamily: "Fredoka, sans-serif" }}>
-            <span className="bg-gradient-to-r from-fuchsia-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">
-              Sketch
-            </span>
-            <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent drop-shadow-lg ml-3">
-              IQ
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4" style={{ fontFamily: "Fredoka, sans-serif" }}>
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              SketchIQ
             </span>
           </h1>
 
-          <p className="text-lg text-slate-300 max-w-lg mx-auto leading-relaxed" style={{ fontFamily: "Nunito, sans-serif" }}>
-            Draw a doodle and watch our <span className="text-indigo-300 font-semibold">Neural Network</span> guess it in real-time.
+          <p className="text-base text-gray-300" style={{ fontFamily: "Nunito, sans-serif" }}>
+            Draw a doodle and watch our <span className="text-purple-400 font-semibold">Neural Network</span> guess it in real-time.
           </p>
         </motion.header>
 
-        {/* 3. Main Glass Dashboard */}
+        {/* Main Glass Dashboard */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="w-full max-w-6xl"
+          className="w-full max-w-5xl"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 p-8 md:p-12 lg:p-14 rounded-[2rem] bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] ring-1 ring-white/5">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8">
             
-            {/* Left Column: Canvas Area */}
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between mb-2 px-2">
-                <div className="flex items-center gap-2 text-white/80">
-                  <Palette className="w-5 h-5 text-fuchsia-400" />
-                  <span className="font-semibold text-lg">Canvas</span>
-                </div>
-                {hasDrawn && !isLoading && (
-                  <span className="text-xs text-emerald-400 font-medium bg-emerald-400/10 px-2 py-1 rounded-md border border-emerald-400/20">
-                    Image Ready
-                  </span>
-                )}
+            {/* Left Panel: Canvas */}
+            <div className="glass-panel overflow-hidden">
+              {/* Panel Header */}
+              <div className="panel-header">
+                <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                <span className="text-white font-semibold">Canvas</span>
               </div>
               
-              <DrawingCanvas
-                onPredict={handlePredict}
-                onDone={handleDone}
-                onClear={handleClear}
-                onDrawStart={handleDrawStart}
-                isLoading={isLoading}
-                hasDrawn={hasDrawn}
-                clearVersion={clearVersion}
-              />
+              {/* Canvas Content */}
+              <div className="p-6">
+                <DrawingCanvas
+                  onPredict={handlePredict}
+                  onClear={handleClear}
+                  onDrawStart={handleDrawStart}
+                  isLoading={isLoading}
+                  hasDrawn={hasDrawn}
+                  clearVersion={clearVersion}
+                  canvasRef={canvasRef}
+                />
+              </div>
             </div>
 
-            {/* Right Column: Prediction Results */}
-            <div className="flex flex-col gap-4 min-h-[400px] lg:min-h-0 h-full">
-               <div className="flex items-center gap-2 text-white/80 mb-2 px-2">
-                  <BrainCircuit className="w-5 h-5 text-cyan-400" />
-                  <span className="font-semibold text-lg">Analysis</span>
-                </div>
-                
-                <div className="flex-1 min-h-[350px] rounded-xl bg-black/20 border border-white/5 overflow-hidden relative">
-                   <PredictionPanel
-                    predictions={predictions}
-                    isLoading={isLoading}
-                    hasDrawn={hasDrawn}
-                  />
-                  {/* Decorative faint grid background for tech feel */}
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
-                </div>
+            {/* Right Panel: Analysis */}
+            <div className="glass-panel overflow-hidden flex flex-col">
+              {/* Panel Header */}
+              <div className="panel-header">
+                <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                <span className="text-white font-semibold">Analysis</span>
+              </div>
+              
+              {/* Analysis Content */}
+              <div className="flex-1 grid-bg p-6">
+                <PredictionPanel
+                  predictions={predictions}
+                  isLoading={isLoading}
+                  hasDrawn={hasDrawn}
+                  onDone={handleDone}
+                  onClear={handleClear}
+                />
+              </div>
             </div>
 
           </div>
         </motion.div>
+      </div>
 
-        </div>
+      {/* Final Guess Modal */}
 
         {isFinalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
